@@ -3,9 +3,114 @@ name = "term-oss"
 version = "0.1.0"
 dependencies = [
  "chip 0.1.0",
+ "rustbox 0.8.1 (registry+git://crates.mirrors.ustc.edu.cn/index)",
 ]
+
+[[package]]
+name = "advapi32-sys"
+version = "0.1.2"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+dependencies = [
+ "winapi 0.2.5 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "winapi-build 0.1.1 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+]
+
+[[package]]
+name = "bitflags"
+version = "0.2.1"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
 
 [[package]]
 name = "chip"
 version = "0.1.0"
+
+[[package]]
+name = "gag"
+version = "0.1.9"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+dependencies = [
+ "libc 0.2.6 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "tempfile 2.0.1 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+]
+
+[[package]]
+name = "kernel32-sys"
+version = "0.2.1"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+dependencies = [
+ "winapi 0.2.5 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "winapi-build 0.1.1 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+]
+
+[[package]]
+name = "libc"
+version = "0.1.12"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+
+[[package]]
+name = "libc"
+version = "0.2.6"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+
+[[package]]
+name = "num"
+version = "0.1.30"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+dependencies = [
+ "rand 0.3.13 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "rustc-serialize 0.3.17 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+]
+
+[[package]]
+name = "rand"
+version = "0.3.13"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+dependencies = [
+ "advapi32-sys 0.1.2 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "libc 0.2.6 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "winapi 0.2.5 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+]
+
+[[package]]
+name = "rustbox"
+version = "0.8.1"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+dependencies = [
+ "bitflags 0.2.1 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "gag 0.1.9 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "libc 0.1.12 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "num 0.1.30 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "termbox-sys 0.2.9 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+]
+
+[[package]]
+name = "rustc-serialize"
+version = "0.3.17"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+
+[[package]]
+name = "tempfile"
+version = "2.0.1"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+dependencies = [
+ "kernel32-sys 0.2.1 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "libc 0.2.6 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "rand 0.3.13 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "winapi 0.2.5 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+]
+
+[[package]]
+name = "termbox-sys"
+version = "0.2.9"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+
+[[package]]
+name = "winapi"
+version = "0.2.5"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+
+[[package]]
+name = "winapi-build"
+version = "0.1.1"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
 
