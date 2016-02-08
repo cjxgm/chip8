@@ -1,0 +1,11 @@
+[root]
+name = "term-oss"
+version = "0.1.0"
+dependencies = [
+ "chip 0.1.0",
+]
+
+[[package]]
+name = "chip"
+version = "0.1.0"
+
