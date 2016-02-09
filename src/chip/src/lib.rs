@@ -8,16 +8,58 @@ mod test {
     #[test]
     fn it_works() {
         decode(0x7234);
+        let mut chip = Chip::new();
+        chip.reset();
     }
 }
 
+//---- modules ----
 #[macro_use]
 mod decoder;
-pub mod peripheral;
-pub use peripheral::{Video, Audio, Input};
 
+mod ram;
+use ram::{Ram, Write, Read};
+
+pub mod peripheral;
+pub use peripheral::{Timer, Video, Audio, Input};
+
+//---- Chip ----
+
+#[derive(Default)]
 pub struct Chip {
-    ram: [u8; 4 * 1024],
+    ram: Ram,
+    stack: Vec<u16>,
+    pc: usize,
+}
+
+impl Chip {
+    pub fn new() -> Chip {
+        Default::default()
+    }
+    pub fn reset(&mut self) {
+        *self = Chip::new();
+    }
+    pub fn load(&mut self, addr: usize, data: &[u8]) {
+        let mut i = addr;
+        for &x in data {
+            self.ram.write(i, x);
+            i += 1;
+        }
+    }
+    pub fn cycle(&mut self) {
+        let inst: u16 = self.ram.read(self.pc);
+    }
+    pub fn frame<P>(&mut self, num_cycle: usize, peripheral: &P)
+            where P: Timer {
+        for _ in 0..num_cycle { self.cycle() }
+        peripheral.wait_next_frame();
+    }
+}
+
+impl Drop for Chip {
+    fn drop(&mut self) {
+        println!("drop");
+    }
 }
 
 

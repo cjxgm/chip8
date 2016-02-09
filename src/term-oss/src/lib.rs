@@ -1,5 +1,10 @@
 extern crate chip;
-use chip::{Video, Audio, Input};
+use chip::{Timer, Video, Audio, Input};
+
+mod ui;
+mod audio;
+use ui::Terminal;
+use audio::Buzzer;
 
 #[cfg(test)]
 mod test {
@@ -8,20 +13,15 @@ mod test {
     }
 }
 
-pub struct Peripheral;
-
-impl Video for Peripheral {
-    fn clear() {
-    }
-
-    fn flip(x: usize, y: usize) -> bool {
-        x + y > 10
-    }
+#[derive(Default)]
+pub struct Peripheral {
+    term: Terminal,
+    buzzer: Buzzer,
 }
 
-impl Audio for Peripheral {
-}
+impl Timer for Peripheral {
+    fn wait_next_frame(&self) {
 
-impl Input for Peripheral {
+    }
 }
 
