@@ -259,16 +259,17 @@ impl Terminal {
     fn print_centering_x(&self, y: usize, line: &str) {
         let rb = &self.rb;
         let st = &self.text_style;
-        let dw = rb.width() as isize - line.width() as isize;
+        let dw = rb.width() as isize - 2 - line.width() as isize;   // -2 for the border
         let x = dw / 2 + dw % 2;
         if x < 0 {
             if line != "…" {
-                let shorter = line[..line.len()/2].to_string() + "…";
+                let len = line.chars().count() - 1;                 // -1 for removing the last "…" (always assuming it's there)
+                let shorter = line.chars().take(len / 2).collect::<String>() + "…";
                 self.print_centering_x(y, &shorter);
             }
             return;
         }
-        rb.print(x as usize, y, st.0, st.1, st.2, line);
+        rb.print(x as usize + 1, y, st.0, st.1, st.2, line);        // +1 for the border
     }
 
     /// Print text in the center of screen, support multiple lines,
@@ -278,20 +279,23 @@ impl Terminal {
     fn print_centered(&self, text: &str) {
         let rb = &self.rb;
         let h = text.lines().count();
-        let dh = rb.height() as isize - h as isize;
+        let dh = rb.height() as isize - 2 - h as isize;             // -2 for the border
         let y = dh / 2 + dh % 2;
         if y < 0 {
-            if h > 1 {
+            if h > 2 {
                 let less = text.lines()
-                    .take(h/2)
+                    .take((h-1)/2)
                     .map(|line| line.to_string() + "\n")
                     .collect::<String>() + "…";
                 self.print_centered(&less);
             }
+            else if h > 1 {
+                self.print_centered("…");
+            }
             return;
         }
 
-        let mut y = y;
+        let mut y = y + 1;                                          // +1 for the border
         for line in text.lines() {
             self.print_centering_x(y as usize, line);
             y += 1;
@@ -341,7 +345,7 @@ impl Default for Terminal {
 mod from_nanos {
     use std::time::Duration;
 
-    const NANOS_PER_SEC: u64 = 1_000_000_000_000;
+    const NANOS_PER_SEC: u64 = 1_000_000_000;
 
     pub trait FromNanos {
         fn from_nanos(nanos: u64) -> Duration;
