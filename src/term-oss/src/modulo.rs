@@ -4,12 +4,31 @@ mod test {
     use super::*;
 
     #[test]
-    fn modulo() {
-        {
-            let a: isize = -10;
-            let b: isize =  20;
-            assert_eq!(a.modulo(b), 10);
-        }
+    fn positive() {
+        let a: isize = 31;
+        let b: isize = 20;
+        assert_eq!(a.modulo(b), 11);
+    }
+
+    #[test]
+    fn positive_contained() {
+        let a: isize =  9;
+        let b: isize = 20;
+        assert_eq!(a.modulo(b), 9);
+    }
+
+    #[test]
+    fn negative() {
+        let a: isize = -31;
+        let b: isize =  20;
+        assert_eq!(a.modulo(b), 9);
+    }
+
+    #[test]
+    fn negative_contained() {
+        let a: isize = -9;
+        let b: isize = 20;
+        assert_eq!(a.modulo(b), 11);
     }
 }
 
