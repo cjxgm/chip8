@@ -2,16 +2,18 @@
 
 /// Synchronization.
 pub trait Timer {
-    /// Wait for the next V-Sync (60 Hz)
-    fn wait_next_frame(&self);
+    /// Wait for the next V-Sync (60 Hz).
+    /// Returns `true` on quit-request.
+    fn pump(&mut self) -> bool;
 }
 
 /// Graphics controller.
 pub trait Video {
     /// Clears the screen.
-    fn clear(&self);
-    /// Flip the color at (x, y) coordinate of the screen, returning the new value.
-    fn flip(&self, x: usize, y: usize) -> bool;
+    fn clear(&mut self);
+    /// Draw sprite by flipping color.
+    /// Returns `true` if anything has been flipped to `false`.
+    fn draw(&mut self, x: isize, y: isize, sprite: &[u8]) -> bool;
     /// Present the screen to display.
     fn present(&self);
 }
@@ -25,6 +27,6 @@ pub trait Audio {
 /// Input state controller.
 pub trait Input {
     /// Determine if key is pressed down (`true`) or not (`false`)
-    fn keydown(&self, which: u8) -> bool;
+    fn keydown(&self, which: usize) -> bool;
 }
 
