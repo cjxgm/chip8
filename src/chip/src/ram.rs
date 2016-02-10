@@ -18,12 +18,6 @@ pub struct Ram {
     mem: [u8; RAM_SIZE],
 }
 
-impl Ram {
-    fn new() -> Ram {
-        Default::default()
-    }
-}
-
 impl Default for Ram {
     fn default() -> Ram {
         Ram {
