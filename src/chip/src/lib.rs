@@ -6,10 +6,29 @@ mod test {
     use super::*;
 
     #[test]
-    fn it_works() {
-        decode(0x7234);
-        let mut chip = Chip::new();
-        chip.reset();
+    #[should_panic]
+    fn no_inst() {
+        let mut chip = Chip::default();
+        chip.cycle();
+        chip.cycle();
+    }
+
+    #[test]
+    fn ping_pong_jmp() {
+        let mut chip = Chip::default();
+        chip.load(0x200, &[0x10, 0x00]);
+        for _ in 0..100 {
+            chip.cycle();
+        }
+    }
+
+    #[test]
+    fn infinite_loop() {
+        let mut chip = Chip::default();
+        chip.load(0x200, &[0x12, 0x00]);
+        for _ in 0..100 {
+            chip.cycle();
+        }
     }
 }
 
@@ -25,7 +44,6 @@ pub use peripheral::{Timer, Video, Audio, Input};
 
 //---- Chip ----
 
-#[derive(Default)]
 pub struct Chip {
     ram: Ram,
     stack: Vec<u16>,
@@ -33,12 +51,10 @@ pub struct Chip {
 }
 
 impl Chip {
-    pub fn new() -> Chip {
-        Default::default()
-    }
     pub fn reset(&mut self) {
-        *self = Chip::new();
+        *self = Default::default();
     }
+
     pub fn load(&mut self, addr: usize, data: &[u8]) {
         let mut i = addr;
         for &x in data {
@@ -46,32 +62,44 @@ impl Chip {
             i += 1;
         }
     }
+
     pub fn cycle(&mut self) {
         let inst: u16 = self.ram.read(self.pc);
+        self.pc += 2;
+
+        //println!("decode {:04X}", inst);    // TODO: remove this
+        decode! { inst =>
+            1NNN(n) { self.pc = n as usize }
+        };
+
+        panic!("unknown instruction {:04X}", inst);
     }
-    pub fn frame<P>(&mut self, num_cycle: usize, peripheral: &P)
-            where P: Timer {
+
+    pub fn frame<P>(&mut self, num_cycle: usize, peripheral: &mut P) -> bool
+        where P: Timer + Input + Video
+    {
         for _ in 0..num_cycle { self.cycle() }
-        peripheral.wait_next_frame();
+        peripheral.present();
+        peripheral.pump()
+    }
+
+
+    /// Only allowed construction by Default trait.
+    fn new() -> Chip {
+        let mut chip = Chip {
+            ram: Default::default(),
+            stack: Default::default(),
+            pc: Default::default(),
+        };
+        chip.load(0, &[0x12, 0x00]);
+        // TODO: load font data
+        chip
     }
 }
 
-impl Drop for Chip {
-    fn drop(&mut self) {
-        println!("drop");
+impl Default for Chip {
+    fn default() -> Chip {
+        Chip::new()
     }
-}
-
-
-pub fn decode(inst: u16) {
-    println!("decode {:04X}", inst);
-    let decode = decoder! {
-        7XNN(x, n) { println!("  x:{:X} n:{:X}", x, n) }
-        8XY1(x, y) { println!("  x:{:X} y:{:X}", x, y) }
-        00E0() { println!("  E") }
-        00E1() { println!("  F") }
-        0NNN(n) { println!("  n:{:X}", n) }
-    };
-    decode(inst);
 }
 
