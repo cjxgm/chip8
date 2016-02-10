@@ -1,12 +1,16 @@
 extern crate chip;
 extern crate term_oss;
-use chip::decode;
+
+use chip::Chip;
+use term_oss::Peripheral;
 
 fn main() {
-    decode(0x0123);
-    decode(0x7123);
-    decode(0x8121);
-    decode(0x00E0);
-    decode(0x00E1);
+    let mut chip = Chip::default();
+    let mut pe = Peripheral::default();
+
+    chip.load(0x200, &[0x12, 0x00]);
+
+    while !chip.frame(1000, &mut pe) {
+    }
 }
 
