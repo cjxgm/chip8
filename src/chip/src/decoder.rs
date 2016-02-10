@@ -37,34 +37,29 @@ pub mod private {
 
 /// # Examples
 /// ```
-/// let decode = decoder! {
-///     AXY0 (x, y) { ... }
-///     AXY1 (x, y) { ... }
-///     BXNN (x, n) { ... }
-///     CNNX (x, n) { ... }
-///     DNXY (x, y, n) { ... }
-///     ENNN (n) { ... }
-///     F016 () { ... }
+/// fn decode(inst: u16) {
+///     decode! { inst =>
+///         AXY0 (x, y) { ... }
+///         AXY1 (x, y) { ... }
+///         BXNN (x, n) { ... }
+///         CNNX (x, n) { ... }
+///         DNXY (x, y, n) { ... }
+///         ENNN (n) { ... }
+///         F016 () { ... }
+///     }
+///     panic!("unknown instruction: {:04X}", inst);
 /// };
-/// decode(inst);
 /// ```
-macro_rules! decoder {
-    ($($inst_pat: tt ($($m: ident),*) $action: block)*) => {
-        {
-            fn decode(inst: u16) {
-                $(
-                match ::decoder::private::decoder_match(inst, stringify!($inst_pat)) {
-                    Some(::decoder::private::OpcodeMetadata{ $($m,)* .. }) => {
-                        $action;
-                        return;
-                    },
-                    None => (),
-                };
-                )*
-                panic!("unknown instruction {:04X}", inst);
-            }
-            decode
-        }
+macro_rules! decode {
+    ($inst: ident => $($inst_pat: tt ($($m: ident),*) $action: block)*) => {
+        $(
+        match ::decoder::private::decoder_match($inst, stringify!($inst_pat)) {
+            Some(::decoder::private::OpcodeMetadata{ $($m,)* .. }) => {
+                return $action;
+            },
+            None => (),
+        };
+        )*
     };
 }
 
