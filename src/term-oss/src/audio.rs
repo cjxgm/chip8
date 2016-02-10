@@ -52,6 +52,7 @@ pub struct Buzzer {
 }
 
 impl Buzzer {
+    /// Only allow construction from Default trait.
     fn new() -> Buzzer {
         let mut dsp = File::create("/dev/dsp").unwrap();
         let (tx, rx) = mpsc::channel();
@@ -69,7 +70,7 @@ impl Buzzer {
                     }
                 }
 
-                println!("{}", on);
+                //println!("{}", on);
                 if on {
                     if is_high { dsp.write_all(&HIGHS).unwrap() }
                     else { dsp.write_all(&LOWS).unwrap() }
@@ -89,7 +90,7 @@ impl Buzzer {
         }
     }
 
-    fn buzz(&self, on: bool) {
+    pub fn buzz(&self, on: bool) {
         let msg = if on { Message::On } else { Message::Off };
         self.tx.send(msg).unwrap();
     }
