@@ -71,17 +71,13 @@ mod test {
 
 
 mod key_map {
-    //                                     ┌────────── Hex keys
-    //                                     │       ┌── Reset key
-    //                             ┌───────┴──────┐│
-    //                             0123456789ABCDEFR
-    const KEY_MAP: &'static str = "x123qweasdzcvfr4 ";
-    // QWERTY KEYBOARD                HEX KEYBOARD
-    //     1 2 3 4                      1 2 3 F
-    //     q w e r                      4 5 6 E
-    //     a s d f                      7 8 9 D
-    //     z x c v                      A 0 B C
-    //     <SPACE>                      <RESET>
+    //                             0123456789ABCDEF
+    const KEY_MAP: &'static str = "x123qweasdzcvfr4";
+    // QWERTY KEYBOARD               HEX KEYBOARD
+    //     1 2 3 4                     1 2 3 F
+    //     q w e r                     4 5 6 E
+    //     a s d f                     7 8 9 D
+    //     z x c v                     A 0 B C
 
     pub fn key_from_char(ch: char) -> Option<usize> {
         KEY_MAP.chars()
@@ -107,9 +103,8 @@ pub struct Terminal {
     pixel_h: usize,
     /// Screen of CHIP-8.
     screen: Vec<bool>,
-    /// key-down status in a frame.
-    /// `0..16` for HEX keys, `16` for the RESET key.
-    keydowns: [bool; 17],
+    /// keydown status in a frame.
+    keydowns: [bool; 16],
 
     text_style: StyleComplex,
     /// `[0]` for style of OFF.
@@ -170,7 +165,7 @@ impl Terminal {
 
     /// Returns true for quit-request.
     pub fn pump_events(&mut self, frame_time: Duration) -> bool {
-        self.keydowns = [false; 17];
+        self.keydowns = [false; 16];
 
         let mut remaining = frame_time;
         loop {
@@ -191,8 +186,27 @@ impl Terminal {
         self.keydowns[which]
     }
 
+    pub fn key(&self) -> Option<u8> {
+        loop {
+            let ev = self.rb.poll_event(false).unwrap();
+            match ev {
+                Event::ResizeEvent(..) => (),
+                Event::MouseEvent(..) => (),
+                Event::KeyEvent(Key::Esc) => return None,
+                Event::KeyEvent(Key::Char(ch)) => {
+                    if let Some(k) = key_from_char(ch) {
+                        return Some(k as u8);
+                    }
+                },
+                Event::KeyEvent(_) => (),
+                _ => unreachable!(),
+            }
+            self.paint();
+        }
+    }
 
-    /// Assume self.keydowns == [false; 17] on the start of a frame.
+
+    /// Assume self.keydowns == [false; 16] on the start of a frame.
     /// Returns true for quit-request.
     fn handle_event(&mut self, ev: Event) -> bool {
         match ev {
@@ -219,7 +233,7 @@ impl Terminal {
             pixel_w: pixel_size.0,
             pixel_h: pixel_size.1,
             screen: vec![false; pixel_size.0 * pixel_size.1],
-            keydowns: [false; 17],
+            keydowns: [false; 16],
             text_style: StyleComplex(rustbox::RB_BOLD, Color::White, Color::Black),
             cell_styles: [
                 StyleComplex(rustbox::RB_NORMAL, Color::Black, Color::White),

@@ -37,7 +37,7 @@ impl Video for Peripheral {
 }
 
 impl Audio for Peripheral {
-    fn buzz(&self, on: bool) {
+    fn buzz(&mut self, on: bool) {
         self.buzzer.buzz(on);
     }
 }
@@ -45,6 +45,10 @@ impl Audio for Peripheral {
 impl Input for Peripheral {
     fn keydown(&self, which: usize) -> bool {
         self.term.keydown(which)
+    }
+
+    fn key(&self) -> Option<u8> {
+        self.term.key()
     }
 }
 

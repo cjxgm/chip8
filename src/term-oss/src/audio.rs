@@ -49,6 +49,7 @@ enum Message {
 pub struct Buzzer {
     thread: Option<thread::JoinHandle<()>>,
     tx: mpsc::Sender<Message>,
+    on: bool,
 }
 
 impl Buzzer {
@@ -77,6 +78,7 @@ impl Buzzer {
                     is_high = !is_high;
                 }
                 else { dsp.write_all(&ZEROS).unwrap() }
+                dsp.flush().unwrap();
                 thread::sleep(Duration::from_millis((BUFFER_SIZE * 1000 / SAMPLE_RATE) as u64));
             }
         };
@@ -87,10 +89,13 @@ impl Buzzer {
         Buzzer {
             thread: Some(child),
             tx: tx,
+            on: false,
         }
     }
 
-    pub fn buzz(&self, on: bool) {
+    pub fn buzz(&mut self, on: bool) {
+        if self.on == on { return }
+        self.on = on;
         let msg = if on { Message::On } else { Message::Off };
         self.tx.send(msg).unwrap();
     }

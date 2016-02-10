@@ -28,5 +28,8 @@ pub trait Audio {
 pub trait Input {
     /// Determine if key is pressed down (`true`) or not (`false`)
     fn keydown(&self, which: usize) -> bool;
+    /// Wait until any key is pressed.
+    /// Returns `None` if quit-requested.
+    fn key(&self) -> Option<u8>;
 }
 
