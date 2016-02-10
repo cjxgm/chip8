@@ -13,7 +13,12 @@ pub trait Write<T> {
     fn write(&mut self, addr: usize, value: T);
 }
 
-const RAM_SIZE: usize = 0x1000;
+pub trait Slice<T> {
+    /// num is number of T, not number of bytes
+    fn slice(&mut self, start: usize, num: usize) -> &mut [T];
+}
+
+const RAM_SIZE: usize = 0x10000;
 pub struct Ram {
     mem: [u8; RAM_SIZE],
 }
@@ -49,6 +54,18 @@ impl Write<u16> for Ram {
     fn write(&mut self, addr: usize, value: u16) {
         let be: &mut u16 = unsafe { transmute(&mut self.mem[addr]) };
         *be = value.to_be();
+    }
+}
+
+impl Slice<u8> for Ram {
+    fn slice(&mut self, start: usize, num: usize) -> &mut [u8] {
+        &mut self.mem[start..start+num*1]
+    }
+}
+
+impl Slice<u16> for Ram {
+    fn slice(&mut self, start: usize, num: usize) -> &mut [u16] {
+        unsafe { transmute(&mut self.mem[start..start+num*2]) }
     }
 }
 

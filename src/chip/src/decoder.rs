@@ -4,8 +4,8 @@
 /// macro usage across module boundaries. It is still considered private.
 pub mod private {
     pub struct OpcodeMetadata {
-        pub x: u8,
-        pub y: u8,
+        pub x: usize,
+        pub y: usize,
         pub n: u16,
     }
 
@@ -28,8 +28,8 @@ pub mod private {
             else { u16::from_str_radix(&e, 16).unwrap() }
         };
         Some(OpcodeMetadata {
-            x: extract_u16('X') as u8,
-            y: extract_u16('Y') as u8,
+            x: extract_u16('X') as usize,
+            y: extract_u16('Y') as usize,
             n: extract_u16('N'),
         })
     }
@@ -39,21 +39,21 @@ pub mod private {
 /// ```
 /// fn decode(inst: u16) {
 ///     decode! { inst =>
-///         AXY0 (x, y) { ... }
-///         AXY1 (x, y) { ... }
-///         BXNN (x, n) { ... }
-///         CNNX (x, n) { ... }
-///         DNXY (x, y, n) { ... }
-///         ENNN (n) { ... }
-///         F016 () { ... }
+///         "AXY0" => (x, y) { ... }
+///         "AXY1" => (x, y) { ... }
+///         "BXNN" => (x, n) { ... }
+///         "CNNX" => (x, n) { ... }
+///         "DNXY" => (x, y, n) { ... }
+///         "ENNN" => (n) { ... }
+///         "F016" => () { ... }
 ///     }
 ///     panic!("unknown instruction: {:04X}", inst);
 /// };
 /// ```
 macro_rules! decode {
-    ($inst: ident => $($inst_pat: tt ($($m: ident),*) $action: block)*) => {
+    ($inst: ident => $($inst_pat: expr => ($($m: ident),*) $action: block)*) => {
         $(
-        match ::decoder::private::decoder_match($inst, stringify!($inst_pat)) {
+        match ::decoder::private::decoder_match($inst, $inst_pat) {
             Some(::decoder::private::OpcodeMetadata{ $($m,)* .. }) => {
                 return $action;
             },

@@ -21,7 +21,7 @@ pub trait Video {
 /// Sound controller.
 pub trait Audio {
     /// Enable or disable buzzer
-    fn buzz(&self, on: bool);
+    fn buzz(&mut self, on: bool);
 }
 
 /// Input state controller.
