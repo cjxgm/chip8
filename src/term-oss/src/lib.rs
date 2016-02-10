@@ -1,10 +1,13 @@
+extern crate rustbox;
+extern crate unicode_width;
 extern crate chip;
-use chip::{Timer, Video, Audio, Input};
 
 mod ui;
 mod audio;
+mod modulo;
 use ui::Terminal;
 use audio::Buzzer;
+use chip::{Timer, Video, Audio, Input};
 
 #[cfg(test)]
 mod test {

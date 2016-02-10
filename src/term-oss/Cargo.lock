@@ -4,6 +4,7 @@ version = "0.1.0"
 dependencies = [
  "chip 0.1.0",
  "rustbox 0.8.1 (registry+git://crates.mirrors.ustc.edu.cn/index)",
+ "unicode-width 0.1.3 (registry+git://crates.mirrors.ustc.edu.cn/index)",
 ]
 
 [[package]]
@@ -102,6 +103,11 @@ dependencies = [
 [[package]]
 name = "termbox-sys"
 version = "0.2.9"
+source = "registry+git://crates.mirrors.ustc.edu.cn/index"
+
+[[package]]
+name = "unicode-width"
+version = "0.1.3"
 source = "registry+git://crates.mirrors.ustc.edu.cn/index"
 
 [[package]]
